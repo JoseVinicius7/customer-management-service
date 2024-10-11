@@ -3,6 +3,7 @@ package br.com.app.customer_management_service.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ import java.util.UUID;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Customer {
+public class CustomerEntity {
 
     @Id
     @Column(name="id")

@@ -1,0 +1,243 @@
+openapi: 3.0.0
+info:
+  title: Customer Service API
+  version: 1.0.0
+  description: API para gerenciar clientes (donos de pets) no sistema de pet shop.
+servers:
+  - url: http://localhost:8080/api
+tags:
+  - name: Customer
+    description: Operações relacionadas a clientes
+
+paths:
+  /customers:
+    get:
+      summary: Listar todos os clientes
+      tags: [Customer]
+      responses:
+        '200':
+          description: Lista de clientes retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+        '500':
+          description: Erro interno do servidor.
+
+    post:
+      summary: Criar um novo cliente
+      tags: [Customer]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '201':
+          description: Cliente criado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '400':
+          description: Dados inválidos fornecidos.
+
+  /customers/{customerId}:
+    get:
+      summary: Obter um cliente específico
+      tags: [Customer]
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: ID do cliente a ser obtido.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cliente retornado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '404':
+          description: Cliente não encontrado.
+
+    put:
+      summary: Atualizar um cliente existente
+      tags: [Customer]
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: ID do cliente a ser atualizado.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '200':
+          description: Cliente atualizado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '400':
+          description: Dados inválidos fornecidos.
+        '404':
+          description: Cliente não encontrado.
+
+    delete:
+      summary: Remover um cliente
+      tags: [Customer]
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: ID do cliente a ser removido.
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Cliente removido com sucesso.
+        '404':
+          description: Cliente não encontrado.
+
+  /customers/{customerId}/pets:
+    get:
+      summary: Consultar pets de um cliente
+      tags: [Customer]
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: ID do cliente para consultar seus pets.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de pets retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pet'
+        '404':
+          description: Cliente não encontrado.
+
+    post:
+      summary: Associar um pet a um cliente
+      tags: [Customer]
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: ID do cliente ao qual o pet será associado.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PetAssociation'
+      responses:
+        '200':
+          description: Pet associado com sucesso ao cliente.
+        '404':
+          description: Cliente ou pet não encontrado.
+        '400':
+          description: Dados inválidos fornecidos.
+
+  /customers/{customerId}/pets/{petId}:
+    delete:
+      summary: Desassociar um pet de um cliente
+      tags: [Customer]
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: ID do cliente do qual o pet será desassociado.
+          schema:
+            type: string
+        - name: petId
+          in: path
+          required: true
+          description: ID do pet a ser desassociado.
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Pet desassociado com sucesso do cliente.
+        '404':
+          description: Cliente ou pet não encontrado.
+
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID único do cliente.
+        name:
+          type: string
+          description: Nome do cliente.
+        cpf:
+          type: string
+          description: cpf do cliente
+        email:
+          type: string
+          description: E-mail do cliente.
+        phone:
+          type: string
+          description: Telefone do cliente
+        address:
+          type: string
+          description: Endereço do cliente
+        createDate:
+          type: string
+          description: Data de cadastro do
+        updateDate:
+          type: string
+          description: Data de atualização do cadastro
+      required:
+        - name
+        - email
+        - phone
+    Pet:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID único do pet.
+        name:
+          type: string
+          description: Nome do pet.
+        breed:
+          type: string
+          description: Raça do pet.
+        age:
+          type: integer
+          description: Idade do pet em anos.
+      required:
+        - name
+
+    PetAssociation:
+      type: object
+      properties:
+        petId:
+          type: string
+          description: ID do pet a ser associado.
+      required:
+        - petId

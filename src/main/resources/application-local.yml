@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: customer-management-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: admin
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        default_schema: public
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration  # Corrigido para o diret�rio padr�o de migra��o
+    baseline-on-migrate: true
+    validate-on-migrate: false

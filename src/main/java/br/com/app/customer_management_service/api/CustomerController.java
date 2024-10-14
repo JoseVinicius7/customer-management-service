@@ -53,7 +53,10 @@ public class CustomerController implements CustomersApi {
 
     @Override
     public ResponseEntity<List<CustomerDTO>> customersGet() {
-        return null;
+        log.info("Fetching all customers.");
+        List<CustomerDTO> response = customerService.getCustomers();
+        log.info("Number of customers retrieved: {}", response.size());
+        return ResponseEntity.ok(response);
     }
 
     @Override

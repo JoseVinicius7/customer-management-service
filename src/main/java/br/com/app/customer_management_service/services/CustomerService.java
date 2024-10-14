@@ -9,4 +9,5 @@ public interface CustomerService {
 
     CustomerDTO addCustomer(CustomerDTO body);
 
+    List<CustomerDTO> getCustomers();
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Log4j2
@@ -31,6 +32,21 @@ public class CustomerServiceImpl implements CustomerService {
         log.info("Customer saved successfully");
         return convertToDTO(savedCustomer);
     }
+
+    @Override
+    public List<CustomerDTO> getCustomers() {
+        log.info("Fetching all pets from the repository.");
+        List<CustomerEntity> customerEntityList = customerRepository.findAll();
+        log.info("Number of pets retrieved: {}", customerEntityList.size());
+        return convertToDTOs(customerEntityList);
+    }
+
+    private List<CustomerDTO> convertToDTOs(List<CustomerEntity> customerEntities) {
+        return customerEntities.stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
 
     private void validateCustomerDTO(CustomerDTO customerDTO) {
         if (customerDTO.getName() == null || customerDTO.getName().isEmpty()) {

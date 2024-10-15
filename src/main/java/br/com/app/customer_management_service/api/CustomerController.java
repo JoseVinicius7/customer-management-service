@@ -23,7 +23,10 @@ public class CustomerController implements CustomersApi {
 
     @Override
     public ResponseEntity<Void> customersCustomerIdDelete(String customerId) {
-        return null;
+        log.debug("Request to delete customer with ID: {}", customerId);
+        customerService.deleteCustomer(customerId);
+        log.info("Customer with ID: {} deleted successfully.", customerId);
+        return ResponseEntity.noContent().build();
     }
 
     @Override
@@ -51,7 +54,10 @@ public class CustomerController implements CustomersApi {
 
     @Override
     public ResponseEntity<CustomerDTO> customersCustomerIdPut(CustomerDTO body, String customerId) {
-        return null;
+        log.debug("Request to update customer with ID: {} with data: {}", customerId, body);
+        CustomerDTO response = customerService.updateCustomer(customerId, body);
+        log.info("Customer with ID: {} updated successfully.", customerId);
+        return ResponseEntity.ok(response);
     }
 
     @Override

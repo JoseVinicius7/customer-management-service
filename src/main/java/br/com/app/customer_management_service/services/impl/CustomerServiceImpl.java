@@ -50,6 +50,35 @@ public class CustomerServiceImpl implements CustomerService {
         return convertToDTO(customer);
     }
 
+    @Override
+    public CustomerDTO updateCustomer(String customerId, CustomerDTO customerDTO) {
+        log.debug("Updating customer with ID: {}", customerId);
+        validateCustomerDTO(customerDTO);
+
+        CustomerEntity existingCustomer = customerRepository.findById(UUID.fromString(customerId))
+                .orElseThrow(() -> APIException.build(HttpStatus.NOT_FOUND,"Cliente não encontrado com ID: " + customerId));
+
+        existingCustomer.setName(customerDTO.getName());
+        existingCustomer.setCpf(customerDTO.getCpf());
+        existingCustomer.setEmail(customerDTO.getEmail());
+        existingCustomer.setPhone(customerDTO.getPhone());
+        existingCustomer.setAddress(customerDTO.getAddress());
+        existingCustomer.setDateTimeLastChange(LocalDateTime.now());
+
+        CustomerEntity updatedCustomer = customerRepository.save(existingCustomer);
+        log.info("Customer updated successfully with ID: {}", updatedCustomer.getId());
+        return convertToDTO(updatedCustomer);
+    }
+
+    @Override
+    public void deleteCustomer(String customerId) {
+        log.debug("Deleting customer with ID: {}", customerId);
+        CustomerEntity customer = customerRepository.findById(UUID.fromString(customerId))
+                .orElseThrow(() -> APIException.build(HttpStatus.NOT_FOUND,"Cliente não encontrado com ID: " + customerId));
+        customerRepository.delete(customer);
+        log.info("Customer deleted successfully with ID: {}", customerId);
+    }
+
     private List<CustomerDTO> convertToDTOs(List<CustomerEntity> customerEntities) {
         return customerEntities.stream()
                 .map(this::convertToDTO)
@@ -82,6 +111,7 @@ public class CustomerServiceImpl implements CustomerService {
         reponseCustomerDTO.setPhone(savedCustomer.getPhone());
         reponseCustomerDTO.setAddress(savedCustomer.getAddress());
         reponseCustomerDTO.setCreateDate(String.valueOf(savedCustomer.getDateTimeRegistration()));
+        reponseCustomerDTO.setUpdateDate(String.valueOf(savedCustomer.getDateTimeLastChange()));
         return reponseCustomerDTO;
     }
 

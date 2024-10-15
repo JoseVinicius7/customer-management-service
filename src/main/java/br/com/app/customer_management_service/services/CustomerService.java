@@ -12,4 +12,8 @@ public interface CustomerService {
     List<CustomerDTO> getCustomers();
 
     CustomerDTO getCustomerById(String customerId);
+
+    CustomerDTO updateCustomer(String customerId, CustomerDTO body);
+
+    void deleteCustomer(String customerId);
 }

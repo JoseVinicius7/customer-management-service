@@ -28,7 +28,10 @@ public class CustomerController implements CustomersApi {
 
     @Override
     public ResponseEntity<CustomerDTO> customersCustomerIdGet(String customerId) {
-        return null;
+        log.debug("Request to fetch customer with ID: {}", customerId);
+        CustomerDTO customerDTO = customerService.getCustomerById(customerId);
+        log.info("Customer found: {}", customerDTO);
+        return ResponseEntity.ok(customerDTO);
     }
 
     @Override
@@ -61,7 +64,7 @@ public class CustomerController implements CustomersApi {
 
     @Override
     public ResponseEntity<CustomerDTO> customersPost(@RequestBody @Valid CustomerDTO body) {
-        log.debug("Request to add new pet: {}", body);
+        log.debug("Request to add new customer: {}", body);
         CustomerDTO response = customerService.addCustomer(body);
         log.info("Customer added succesfully with ID: {}", response.getId());
         return ResponseEntity.ok(response);

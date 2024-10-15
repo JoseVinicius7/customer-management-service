@@ -10,4 +10,6 @@ public interface CustomerService {
     CustomerDTO addCustomer(CustomerDTO body);
 
     List<CustomerDTO> getCustomers();
+
+    CustomerDTO getCustomerById(String customerId);
 }

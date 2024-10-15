@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 
 @Log4j2
@@ -35,10 +36,18 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerDTO> getCustomers() {
-        log.info("Fetching all pets from the repository.");
+        log.info("Fetching all customers from the repository.");
         List<CustomerEntity> customerEntityList = customerRepository.findAll();
-        log.info("Number of pets retrieved: {}", customerEntityList.size());
+        log.info("Number of customers retrieved: {}", customerEntityList.size());
         return convertToDTOs(customerEntityList);
+    }
+
+    @Override
+    public CustomerDTO getCustomerById(String customerId) {
+        log.debug("Fetching customer with ID: {}", customerId);
+        CustomerEntity customer = customerRepository.findById(UUID.fromString(customerId))
+                .orElseThrow(() -> APIException.build(HttpStatus.NOT_FOUND,"Cliente não encontrado com ID: " + customerId));
+        return convertToDTO(customer);
     }
 
     private List<CustomerDTO> convertToDTOs(List<CustomerEntity> customerEntities) {

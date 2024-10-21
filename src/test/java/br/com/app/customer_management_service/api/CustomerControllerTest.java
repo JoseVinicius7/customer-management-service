@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class CustomerControllerTest {
     @InjectMocks
@@ -69,6 +68,51 @@ public class CustomerControllerTest {
         assertEquals("Ronildo", response.getBody().getName());
 
         verify(customerService).addCustomer(customerToAdd);
+    }
+
+    @Test
+    void customersCustomerIdDelete_ShouldDeleteCustomer() {
+        String customerId = "1";
+
+        doNothing().when(customerService).deleteCustomer(customerId);
+
+        ResponseEntity<Void> response = customerController.customersCustomerIdDelete(customerId);
+
+        assertEquals(204, response.getStatusCodeValue());
+        verify(customerService).deleteCustomer(customerId);
+    }
+
+    @Test
+    void customersCustomerIdGet_ShouldReturnCustomer() {
+        String customerId = "a825d789-ee82-40de-a0e0-1147b09cacbd";
+        CustomerDTO customer = new CustomerDTO();
+        customer.setId(UUID.fromString(customerId));
+        customer.setName("Ronildo");
+
+        when(customerService.getCustomerById(customerId)).thenReturn(customer);
+
+        ResponseEntity<CustomerDTO> response = customerController.customersCustomerIdGet(customerId);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(customerId, response.getBody().getId().toString());
+        assertEquals("Ronildo", response.getBody().getName());
+        verify(customerService).getCustomerById(customerId);
+    }
+
+    @Test
+    void customersCustomerIdPut_ShouldUpdateCustomer() {
+        String customerId = "a825d789-ee82-40de-a0e0-1147b09cacbd";
+        CustomerDTO customerToUpdate = new CustomerDTO();
+        customerToUpdate.setId(UUID.fromString(customerId));
+        customerToUpdate.setName("Ronildo Updated");
+
+        when(customerService.updateCustomer(eq(customerId), any(CustomerDTO.class))).thenReturn(customerToUpdate);
+
+        ResponseEntity<CustomerDTO> response = customerController.customersCustomerIdPut(customerToUpdate, customerId);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("Ronildo Updated", response.getBody().getName());
+        verify(customerService).updateCustomer(customerId, customerToUpdate);
     }
 
 }
